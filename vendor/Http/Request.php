@@ -27,9 +27,9 @@ class Request {
     private $uri;
     
     /**
-     * @var     array   Array with get/post data
+     * @var \Phphilosophy\Http\Interfaces\InputInterface
      */
-    private $input = [];
+    private $input;
     
     /**
      * @var \Phphilosophy\Http\Interfaces\SessionInterface
@@ -48,11 +48,8 @@ class Request {
         // The HTTP request method
         $this->method = $_SERVER['REQUEST_METHOD'];
         
-        // The query string (with GET data)
-        $this->input['get'] = $_GET;
-        
-        // The PHP Input Stream (with POST data)
-        $this->input['post'] = $_POST;
+        // Add GET and POST input
+        $this->input = new Input($_GET, $_POST);
         
         // Set the session class
         $this->session = new Session();
@@ -89,47 +86,23 @@ class Request {
     }
     
     /**
-     * @param   string|null $key        GET|POST-key
-     * @param   mixed|null  $default    default value
-     * @param   string      $method     method
-     * @return  mixed|array
+     * @param   string  $name
+     * @param   mixed   $default
+     *
+     * @return  mixed
      */
-    private function getInput($key = null, $default = null, $method = 'get')
-    {        
-        // Checks, whether a specific value was requested
-        if (isset($key)) {
-            
-            // Does the requested value exist?
-            if (isset($this->input[$method][$key])) {
-                
-                // Positive: return the value
-                return $this->input[$method][$key];  
-            } 
-            
-            // Negative: the default value
-            return $default;
-        }
-            
-        // return the entire array
-        return $this->input[$method];
+    public function get(string $name = null, $default = null) {
+        return $this->input->get($name, $default);
     }
-    
+
     /**
-     * @param   string|null $key        get key
-     * @param   mixed|null  $default    default value
-     * @return  mixed|array
+     * @param   string  $name
+     * @param   mixed   $default
+     *
+     * @return  mixed
      */
-    public function get($key = null, $default = null) {
-        return $this->getInput($key, $default);
-    }
-    
-    /**
-     * @param   string|null $key        get key
-     * @param   mixed|null  $default    default value
-     * @return  mixed|array
-     */
-    public function post($key = null, $default = null) {
-        return $this->getInput($key, $default, 'post');
+    public function post(string $name = null, $default = null) {
+        return $this->input->post($name, $default);
     }
     
     /**
