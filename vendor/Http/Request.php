@@ -2,7 +2,7 @@
 
 namespace Phphilosophy\Http;
 
-use Phphilosophy\Http\Interfaces\SessionInterface;
+use Phphilosophy\Http\Interfaces\{InputInterface,SessionInterface};
 
 /**
  * Phphilosophy Request
