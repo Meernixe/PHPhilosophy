@@ -23,7 +23,9 @@ class Connection {
      * @param   array   $config
      */
     public function __construct(array $config) {
-        $this->connect($config);
+		
+			$this->connect($config);
+
     }
     
     /**
@@ -39,8 +41,17 @@ class Connection {
             \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES '.$config['char']
         );
         
-        // Create new PDO object
-        $this->pdo = new \PDO($dns, $config['user'], $config['password'], $options);
+		//Exception abfangen
+		try{
+			
+			// Create new PDO object
+			$this->pdo = new \PDO($dns, $config['user'], $config['password'], $options);
+			$this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+		
+		} catch (\PDOException $e) {
+			echo 'Verbindung fehlgeschlagen: ' . $e->getMessage();
+			exit;
+		}
     }
     
     /**
